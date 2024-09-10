@@ -1,0 +1,19 @@
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+@import '@fontsource/roboto/700.css';
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #1a1a1a;
+}
+
+.rdw-editor-main {
+  background-color: #ffffff;
+  min-height: 300px;
+  padding: 10px;
+  border: 1px solid #f1f1f1;
+}
