@@ -11,9 +11,11 @@ body {
   color: #1a1a1a;
 }
 
-.rdw-editor-main {
-  background-color: #ffffff;
-  min-height: 300px;
-  padding: 10px;
-  border: 1px solid #f1f1f1;
+.design-output {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 16px;
+  white-space: pre-wrap;
 }
