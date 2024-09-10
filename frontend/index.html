@@ -151,22 +151,28 @@
 
         function displayOutput(response) {
             // Parse the response and create HTML elements
-            // This function will need to be adapted based on the exact format of the Anthropic API response
-            const sections = response.split('\n\n');
-            let html = '';
+            // This function will need to be adapted based on the exact format of the response
+            try {
+                const parsedResponse = JSON.parse(response);
+                const content = parsedResponse.content[0].text;
+                const sections = content.split('\n\n');
+                let html = '';
 
-            sections.forEach(section => {
-                const [title, ...content] = section.split('\n');
-                const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '');
-                html += `
-                    <div id="${id}" class="section">
-                        <h2>${title}</h2>
-                        <div>${content.join('<br>')}</div>
-                    </div>
-                `;
-            });
+                sections.forEach(section => {
+                    const [title, ...contentLines] = section.split('\n');
+                    const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '');
+                    html += `
+                        <div id="${id}" class="section">
+                            <h2>${title}</h2>
+                            <div>${contentLines.join('<br>')}</div>
+                        </div>
+                    `;
+                });
 
-            output.innerHTML = html;
+                output.innerHTML = html;
+            } catch (error) {
+                output.innerHTML = `<p class="error">Error parsing response: ${error.message}</p>`;
+            }
         }
     </script>
 </body>
