@@ -1,16 +1,20 @@
-// TODO: Replace this mock implementation with actual canister integration when available
-const mockGenerateDesign = async (prompt) => {
-    return JSON.stringify({
-        model: "claude-3-sonnet-20240229",
-        content: [{
-            type: "text",
-            text: `3D Model Description\nA detailed 3D model based on your prompt: ${prompt}\n\n` +
-                  "Material Properties\nSuggested materials and their properties for the 3D object.\n\n" +
-                  "Printing Instructions\nStep-by-step guide for 3D printing this object.\n\n" +
-                  "Post-Processing\nRecommended post-processing techniques for the printed object."
-        }]
-    });
-};
+import { Actor, HttpAgent } from '@dfinity/agent';
+
+const canisterId = 'rrkah-fqaaa-aaaaa-aaaaq-cai';
+const agent = new HttpAgent();
+let GEMS;
+
+async function initializeActor() {
+    if (process.env.NODE_ENV !== 'production') {
+        await agent.fetchRootKey();
+    }
+    const idlFactory = ({ IDL }) => {
+        return IDL.Service({
+            'generateDesign': IDL.Func([IDL.Text], [IDL.Text], []),
+        });
+    };
+    GEMS = Actor.createActor(idlFactory, { agent, canisterId });
+}
 
 const generateBtn = document.getElementById('generateBtn');
 const promptInput = document.getElementById('promptInput');
@@ -24,7 +28,10 @@ generateBtn.addEventListener('click', async () => {
     output.classList.remove('hidden');
 
     try {
-        const response = await mockGenerateDesign(prompt);
+        if (!GEMS) {
+            await initializeActor();
+        }
+        const response = await GEMS.generateDesign(prompt);
         displayOutput(response);
     } catch (error) {
         output.innerHTML = `<p class="error">Error: ${error.message}</p>`;
@@ -54,3 +61,8 @@ function displayOutput(response) {
         output.innerHTML = `<p class="error">Error parsing response: ${error.message}</p>`;
     }
 }
+
+initializeActor().catch(error => {
+    console.error('Failed to initialize actor:', error);
+    output.innerHTML = `<p class="error">Failed to initialize: ${error.message}</p>`;
+});
